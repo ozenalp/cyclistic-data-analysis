@@ -46,4 +46,4 @@ if (colnames_match) {
   merged_df <- bind_rows(df_list)
 }
 
-write.csv(merged_df, "merged_data.csv")
+write.csv(merged_df, "merged_data.csv", row.names = FALSE)
