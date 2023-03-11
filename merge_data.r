@@ -1,8 +1,11 @@
 # Load the dplyr package
 library("dplyr")
 
+# Get working directory
+current_dir <- getwd()
+
 # Set the path to the folder containing data files
-folder_path <- "C:/Users/ozen_/Documents/GitHub/cyclistic-data-analysis/data"
+folder_path <- file.path(current_dir, "data")
 
 # Get a list of all the .csv files in that folder
 file_list <- list.files(folder_path, pattern = "*.csv")
