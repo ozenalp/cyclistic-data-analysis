@@ -17,5 +17,5 @@ colnames_and_types_match <- check_consistency(df_list)
 if (colnames_and_types_match) {
   # Combine all data frames into one using dplyr's bind_rows function
   merged_df <- bind_rows(df_list)
-  write.csv(merged_df, "merged_data.csv", row.names = FALSE)
+  write_csv(merged_df, "merged_data.csv", progress = show_progress())
 }
