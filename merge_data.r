@@ -49,10 +49,4 @@ if (colnames_match) {
   merged_df <- bind_rows(df_list)
 }
 
-# Remove the unnecessary columns, which will not be helpful on our analysis
-unnecessary_columns <- c("ride_id", "start_station_name", "start_station_id",
-  "end_station_name", "end_station_id")
-
-merged_df <- select(merged_df, -all_of(unnecessary_columns))
-
 write.csv(merged_df, "merged_data.csv", row.names = FALSE)
