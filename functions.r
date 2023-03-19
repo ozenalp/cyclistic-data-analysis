@@ -15,5 +15,5 @@ check_consistency <- function(df_list) {
 
 # Check the structure of data
 get_data_str <- function(dataframe) {
-  capture.output(str(dataframe, max.level =1))
+  capture.output(str(dataframe, max.level = 1))
 }
