@@ -1,28 +1,30 @@
-current_dir <- getwd() # Get working directory
+# Load the libraries and functions.r
+library(tidyverse)
+source("functions.R")
+# Read the merged data
+data <- getwd() %>%
+  file.path("merged_data.csv") %>%
+  read_csv()
 
-file_path <- file.path(current_dir, "merged_data.csv") # Get the file path
+# Check the structure of data
+str(data)
 
-data <- read.csv(file_path) # Read data from .csv file
+# Add columns that list the date, month, and day of each ride
+data$date <- as.Date(data$started_at)
+data$month <- format(as.Date(data$date), "%m")
+data$day <- format(as.Date(data$date), "%d")
+data$day_of_week <- format(as.Date(data$date), "%A")
 
-# Check the structure of the data
-str_data <- capture.output(str(data, max.level = 1))
-
-# Check how many empty cells in each column
-empty_cells <- colSums(is.na(data) | data == "" | is.null(data))
-# Get the percentage of empty cells in each column
-percent_empty <- round(empty_cells / nrow(data) * 100, 2)
-print(percent_empty)
-
-# Remove rows where no info exists
-data <- data[rowSums(is.na(data) | data == "") == 0, ]
-
-# Convert "started_at" and "ended_at" columns to datetime since,
-# we can not operate on chr
-data$started_at <- as.POSIXct(data$started_at, format = "%Y-%m-%d %H:%M:%S")
-data$ended_at <- as.POSIXct(data$ended_at, format = "%Y-%m-%d %H:%M:%S")
 # Create a new column for the ride length
-data$ride_length <- difftime(data$ended_at, data$started_at, units = "mins")
-# Create a new column for the day of the week
-data$day_of_week <- as.numeric(format(data$started_at, "%u"))
-
-write.csv(data, "processed_data.csv", row.names = FALSE)
+data$ride_length <- as.double(
+        difftime(data$ended_at, data$started_at, units = "mins")
+)
+# Check ride_length. Does everything makes sense?
+summary(data$ride_length)
+# It appears that there are some outliers in data, which needs to be removed
+# Remove rows with negative ride length
+data_v2 <- data[data$ride_length >= 0, ]
+# Check how many empty cells in each column
+empty_cells <- colSums(is.na(data) | is.null(data))
+# Write the processed dataset
+write_csv(data_v2, "processed_data.csv")
