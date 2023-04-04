@@ -13,21 +13,19 @@ aggregate(data$ride_length ~ data$member_casual, FUN = max)
 aggregate(data$ride_length ~ data$member_casual, FUN = median)
 aggregate(data$ride_length ~ data$member_casual, FUN = min)
 
-# See the average ride time by each day for members vs casual users
-table(data$member_casual, data$day_of_week)
-aggregate(data$ride_length ~
-  data$member_casual + data$day_of_week, FUN = mean, drop = FALSE)
-
-ggplot(data, aes(x = ride_length, fill = member_casual)) + 
-  geom_histogram(position = "dodge", binwidth = 1000) +
-  facet_wrap(~day_of_week)
-
 # Notice that the days of the week are out of order. Let's fix that.
 data$day_of_week <- ordered(data$day_of_week,
   levels=c(
     "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"
     )
   )
+
+aggregate(data$ride_length ~
+  data$member_casual + data$day_of_week, FUN = mean, drop = FALSE)
+
+ggplot(data, aes(x = ride_length, fill = member_casual)) +
+  geom_histogram(position = "dodge", binwidth = 1000) +
+  facet_wrap(~day_of_week)
 
 # analyze ridership data by type and weekday
 data %>%
@@ -56,3 +54,23 @@ data %>%
   arrange(member_casual, weekday)  %>%
   ggplot(aes(x = weekday, y = average_duration, fill = member_casual)) +
   geom_col(position = "dodge")
+
+
+data %>%
+  mutate(month = month(started_at, label = TRUE)) %>%
+  group_by(member_casual, month) %>%
+  summarise(number_of_rides = n(),
+            average_duration = mean(ride_length)) %>%
+  arrange(member_casual, month)  %>%
+  ggplot(aes(x = month, y = average_duration, fill = member_casual)) +
+  geom_col(position = "dodge")
+
+  data %>%
+  mutate(month = month(started_at, label = TRUE)) %>%
+  group_by(member_casual, month) %>%
+  summarise(number_of_rides = n(),
+            average_duration = mean(ride_length)) %>%
+  arrange(member_casual, month)  %>%
+  ggplot(aes(x = month, y = number_of_rides, fill = member_casual)) +
+  geom_col(position = "dodge")
+
