@@ -5,7 +5,7 @@ source("functions.R")
 data <- getwd() %>%
   file.path("merged_data.csv") %>%
   read_csv()
-
+ 
 # Check the structure of data
 str(data)
 
